@@ -41,11 +41,23 @@ char *find_path(void);
 /* helper functions */
 void free_buffers(char **buf);
 
+/**
+ * struct builtin - ...
+ * @env: ...
+ * @exit: ...
+ */
+
 struct builtin
 {
 	char *env;
 	char *exit;
 } builtin;
+
+/**
+ * struct info - ...
+ * @final_exit: ...
+ * @ln_count: ...
+ */
 
 struct info
 {
@@ -53,9 +65,14 @@ struct info
 	int ln_count;
 } info;
 
+/**
+ * struct flags - ...
+ * @interactive: ...
+ */
+
 struct flags
 {
 	bool interactive;
 } flags;
 
-#endif
+#endif /* SHELL_H  */
