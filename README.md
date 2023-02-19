@@ -4,7 +4,7 @@
 An implementation of the Simple C shell
 
 
-![Alt text](shell.jpeg "gates of shell")
+![Alt text](shell.jpg "gates of shell")
 
 ## Contributors
 * [**Lubembe Michael**]
