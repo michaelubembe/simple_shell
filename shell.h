@@ -12,6 +12,13 @@
 #include <time.h>
 #include <stdbool.h>
 
+/* prototypes */
 void prompt_user(void);
+
+/* struc functions */
+struct flags
+{
+	bool interactive;
+} flags;
 
 #endif
