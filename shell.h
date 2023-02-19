@@ -38,7 +38,7 @@ char *_strchr(char *s, char c);
 void execution(char *cp, char **cmd);
 char *find_path(void);
 
-/* helper function for efficient free */
+/* helper functions */
 void free_buffers(char **buf);
 
 struct builtin
@@ -58,4 +58,4 @@ struct flags
 	bool interactive;
 } flags;
 
-#endif /* SHELL_H */
+#endif
