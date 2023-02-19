@@ -12,4 +12,6 @@
 #include <time.h>
 #include <stdbool.h>
 
+void prompt_user(void);
+
 #endif
