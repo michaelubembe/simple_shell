@@ -1,109 +1,113 @@
 #ifndef SHELL_H
 #define SHELL_H
+#define OUT 0
+#define IN 1
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/wait.h>
-#include <string.h>
-#include <limits.h>
-#include <signal.h>
+/* --Global Variables-- */
+extern char **environ;
+int inchild;
 
-#define FALSE 0
-#define TRUE 1
-#define NEITHER 2
-#define MATCH 3
-#define PREFIX 4
-#define EXIT_SHELL 5
-#define SKIP_FORK 6
-#define DO_EXECVE 7
-
+/* --Address List-- */
 /**
- * struct Alias - singly linked list
- * @name: name of alias
- * @value: command that alias calls
- * @next: points to next node
+ * struct addresses - Struct of a node to hold a list of addresses
+ * @address: Address being stored
+ * @next: Pointer to next node in list
  */
-typedef struct Alias
+typedef struct addresses
+{
+	void *address;
+	struct addresses *next;
+} addr_t;
+
+/* --Builtin Struct--*/
+/**
+ * struct builtins_s - Struct for builtins names & ptrs to the function
+ * @name: Name of the builtin
+ * @func: Pointer to function to call when name is inputted
+ */
+typedef struct builtins_s
 {
 	char *name;
-	char *value;
-	struct Alias *next;
-} alias;
+	int (*func)();
+} builtins_t;
 
-extern char **environ;
+/* --Help Struct --*/
+/**
+ * struct help_s - Struct for different descriptions of builtins
+ * @name: Name of which builtin to get help for
+ * @func: Function to print the help for that function
+ */
+typedef struct help_s
+{
+	char *name;
+	void (*func)();
+} help_t;
 
-extern int status;
+/* --Library Headers-- */
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <signal.h>
 
-extern int line_num;
+/* --General Functions-- */
+void loop(void);
+char **make_args(char *input);
+int wordcount(char *str);
+char *tokenize(char *input, const char *delim, char **saveptr);
+void output(char **args);
+void execute(char **args);
+void sighandler(int sig_num);
+int check_arg(char *firstarg, char *arg0);
 
-extern char *shell_name;
+/* --Memory Functions-- */
+void free_array(char **array);
+void *smart_alloc(size_t size);
 
-int command_manager(char **args);
+/* --Path Functions-- */
+char **check_path(char **args);
+char *path_concat(char *s1, char *s2);
+char *_copypath(char *name);
 
-int built_ins(char **args);
+/* --Builtin Functions-- */
+int check_builtins(char **args, char *input);
+int hosh_printenv(char **args);
+int hosh_setenv(char **args);
+int hosh_unsetenv(char **args);
+int hosh_exit(char **args, char *input);
+int hosh_help(char **args);
 
-int and_or(char **args, char operator, int last_compare);
+/* --Env Functions-- */
+int _unsetenv(char *name);
+char *_findenv(char *name);
+int _addenv(char *newvar, char *name);
 
-char *check_command(char **args);
+/* --Print Functions-- */
+void _puts(char *str);
+int _putchar(char c);
 
-int execute_command(char **args);
-
-char *input_san(char *old_buf, size_t *old_size);
-
-int input_err_check(char *ptr);
-
-void err_message(char *arg0, char *arg1);
-
-void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
-
-int _getline(char **line_ptr, size_t *n, int file);
-
-char *check_for_vars(char *arg);
-
-int _strlen(char *str);
-
-char *_strdup(char *src);
-
+/* --String Functions-- */
+char *_strdup(char *str);
+int _strlen(char *s);
+char *_strchr(char *s, char c);
+char *_strpbrk(char *s, const char *accept);
+int _strspn(char *s, const char *accept);
+int _strncmp(char *s1, char *s2, int n);
 char *str_concat(char *s1, char *s2);
+char *_strcpy(char *dest, char *src);
 
-int str_compare(char *s1, char *s2, int pref_or_match);
+/* --Math Functions-- */
+int _atoi(char *str);
 
-char *get_array_element(char **array, char *element_name);
-
-char **make_array(char *str, char delim, char **if_sep);
-
-int list_len(char **list, char *entry);
-
-char **array_cpy(char **old_array, int new_size);
-
-int free_array(char **args);
-
-int _setenv(const char *name, const char *value);
-
-int _unsetenv(const char *name);
-
-int change_dir(char *name);
-
-int alias_func(char **args, int free);
-
-int free_aliases(alias *alias_ptr);
-
-int check_if_alias(char **args, alias *alias_ptr);
-
-int print_aliases(alias *alias_ptr);
-
-int print_alias_value(char *arg, alias *alias_ptr);
-
-int set_alias_value(char *arg, alias *alias_ptr, char *new_value);
-
-int print_env(void);
-
-char *_itoa(int n);
-
-int _atoi(char *s);
-
-#endif
+/* --Help Functions-- */
+void help_exit(void);
+void help_env(void);
+void help_setenv(void);
+void help_unsetenv(void);
+void help_help(void);
+void print_help(void);
+#endif /* SHELL_H */
